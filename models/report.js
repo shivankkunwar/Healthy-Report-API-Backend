@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 // Create a schema for the report collection
 const reportSchema = new mongoose.Schema({
  
+  email: {type: String, required: true},
   name: { type: String, required: true },
  
   date: { type: Date, required: true },

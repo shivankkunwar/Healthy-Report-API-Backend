@@ -38,7 +38,7 @@ app.post('/api/report', async (req, res) => {
         });
         const userInfo = response.data;
         const email= userInfo.email;
-        const report = new Report({ ...req.body, name: email });
+        const report = new Report({ ...req.body, email: email });
         await report.save();
     // Send a success response with the report
     res.status(201).json(report);
@@ -78,9 +78,9 @@ app.get('/api/report', async (req, res) => {
     const userInfo = response.data;
     const email= userInfo.email;
     
-    const reports = await Report.find({ name: email });
+    const reports = await Report.find({ email: email });
+    res.send(reports); 
     
-    res.status(200).json(reports);
   } catch (error) {
     
     res.status(500).json({ message: error.message });

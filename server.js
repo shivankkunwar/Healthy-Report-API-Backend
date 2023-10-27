@@ -20,7 +20,7 @@ const jwtCheck = auth({
     tokenSigningAlg: 'RS256'
   });
   
-  // enforce on all endpoints
+  
   app.use(jwtCheck);
   
 
@@ -40,10 +40,10 @@ app.post('/api/report', async (req, res) => {
         const email= userInfo.email;
         const report = new Report({ ...req.body, email: email });
         await report.save();
-    // Send a success response with the report
+    
     res.status(201).json(report);
   } catch (error) {
-    // Send an error response with the error message
+    
     res.status(500).json({ message: error.message });
   }
 });
@@ -77,9 +77,37 @@ app.get('/api/report', async (req, res) => {
     });
     const userInfo = response.data;
     const email= userInfo.email;
-    
     const reports = await Report.find({ email: email });
-    res.send(reports); 
+
+    const {sortColumn, sortOrder} =req.query;
+    let sortedReports= reports;
+    if (sortColumn === "name") {
+      sortedReports.sort((a, b) => {
+        if (sortOrder === "asc") {
+          return a.name.localeCompare(b.name);
+        } else {
+          return b.name.localeCompare(a.name);
+        }
+      });
+    } else if (sortColumn === "date") {
+      sortedReports.sort((a, b) => {
+        if (sortOrder === "asc") {
+          return new Date(a.date) - new Date(b.date);
+        } else {
+          return new Date(b.date) - new Date(a.date);
+        }
+      });
+    } else if (sortColumn === "time") {
+      sortedReports.sort((a, b) => {
+        if (sortOrder === "asc") {
+          return a.time.localeCompare(b.time);
+        } else {
+          return b.time.localeCompare(a.time);
+        }
+      });
+    }
+
+    res.send(sortedReports); 
     
   } catch (error) {
     

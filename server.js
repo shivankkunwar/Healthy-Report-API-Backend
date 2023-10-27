@@ -26,7 +26,6 @@ const jwtCheck = auth({
 
 
 
-
 app.post('/api/report', async (req, res) => {
     
     try {
